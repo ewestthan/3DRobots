@@ -1,7 +1,9 @@
+from turtle import back
 import pybullet as p
 import pybullet_data
 import time
-
+import pyrosim.pyrosim as pyrosim
+import numpy as numpy
 
 physicsClient = p.connect(p.GUI)
 p.setAdditionalSearchPath(pybullet_data.getDataPath())
@@ -12,10 +14,20 @@ planeId = p.loadURDF("plane.urdf")
 robotId = p.loadURDF("body.urdf")
 p.loadSDF("world.sdf")
 
+pyrosim.Prepare_To_Simulate(robotId)
+backLegSensorValues = numpy.zeros(100)
+frontLegSensorValues = numpy.zeros(100)
 
-for i in range(10000000):
+for i in range(100):
     p.stepSimulation()
-    time.sleep(0.000001)
+    backLegSensorValues[i] = pyrosim.Get_Touch_Sensor_Value_For_Link("BackLeg")
+    frontLegSensorValues[i] = pyrosim.Get_Touch_Sensor_Value_For_Link("FrontLeg")
+    time.sleep(0.1)
+
+with open('data/backLegData.npy', 'wb') as f:
+    numpy.save(f, backLegSensorValues)
+with open('data/frontLegData.npy', 'wb') as f:
+    numpy.save(f, frontLegSensorValues)
 
 
 p.disconnect()
