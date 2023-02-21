@@ -1,3 +1,4 @@
+from turtle import position
 import pybullet as p
 import pyrosim.pyrosim as pyrosim
 from sensor import SENSOR
@@ -38,7 +39,15 @@ class ROBOT:
 
     def Think(self):
         self.nn.Update()
-        self.nn.Print()
+        # self.nn.Print()
 
+    def Get_Fitness(self):
+        stateOfLinkZero = p.getLinkState(self.robotId,0)
+        positionOfLinkZero = stateOfLinkZero[0]
+        xCoordinatesOfLinkZero = positionOfLinkZero[0]
 
+        f = open("fitness.txt", "w")
+        f.write(str(xCoordinatesOfLinkZero))
+        f.close()
 
+        exit()
