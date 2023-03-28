@@ -6,7 +6,8 @@ from robot import ROBOT
 import time
 
 class SIMULATION:
-    def __init__(self, directOrGui):
+    def __init__(self, directOrGui, solutionId):
+        self.directOrGui = directOrGui
         if directOrGui == "DIRECT":
             self.physicsClient = p.connect(p.DIRECT)
         else:
@@ -15,7 +16,7 @@ class SIMULATION:
         p.setGravity(0,0,-9.8)
 
         self.world = WORLD()
-        self.robot = ROBOT()
+        self.robot = ROBOT(solutionId)
 
     def __del__(self):
         p.disconnect()
@@ -28,8 +29,8 @@ class SIMULATION:
             self.robot.Sense(i)
             self.robot.Think()
             self.robot.Act()
-
-            time.sleep(0.0001)
+            if(self.directOrGui == "GUI"):
+                time.sleep(0.0001)
 
     def Get_Fitness(self):
         self.robot.Get_Fitness()
